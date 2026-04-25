@@ -76,8 +76,11 @@ st.markdown("""
 *, *::before, *::after { box-sizing: border-box; }
 
 /* ── Hide Streamlit Watermarks ── */
-.stAppDeployButton { display: none !important; }
+.stAppDeployButton, .stDeployButton, [data-testid="stDeployButton"] { display: none !important; }
 footer { visibility: hidden !important; }
+header { visibility: hidden !important; display: none !important; }
+#MainMenu { visibility: hidden !important; }
+[data-testid="manage-app-button"] { display: none !important; }
 
 html, body, [data-testid="stAppViewContainer"] {
     font-family: var(--ff-body);
