@@ -15,7 +15,7 @@ venv/
 data/itineraries.json
 
 # ── ML Model Files (auto-generated — run: python models/ml_model.py) ──
-models/*.joblib
+#models/*.joblib
 models/__pycache__/
 services/__pycache__/
 
