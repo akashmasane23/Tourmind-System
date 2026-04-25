@@ -575,7 +575,7 @@ def show():
         pill_cols = st.columns(len(pill_options), gap="small")
         for i, (val, label) in enumerate(zip(pill_options, pill_labels)):
             with pill_cols[i]:
-                if st.button(label, key=f"pill_{val}", use_container_width=True,
+                if st.button(label, key=f"pill_{label}", use_container_width=True,
                              type="primary" if st.session_state.num_results == val else "secondary"):
                     st.session_state.num_results = val
                     st.rerun()
