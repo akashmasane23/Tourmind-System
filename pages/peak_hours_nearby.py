@@ -588,10 +588,12 @@ def show():
                 lat, lng = get_coordinates(place_search)
 
                 if lat and lng:
-                    from datetime import datetime as _dt
+                    from datetime import datetime as _dt, timezone as _tz, timedelta as _td
+                    _ist = _tz(_td(hours=5, minutes=30))
+                    _now_ist = _dt.now(_ist)
                     nearby_places = get_nearby_attractions(
                         lat, lng,
-                        user_hour=_dt.now().hour,
+                        user_hour=_now_ist.hour,
                         user_preference=user_preference if user_preference != "any" else "",
                     )
 
@@ -603,7 +605,7 @@ def show():
                         map_names = [f"⭐ {info['place']} (Searched)"]
                         map_colors = ["#E8845A"] # Orange for searched place
                         
-                        current_hour = _dt.now().hour
+                        current_hour = _now_ist.hour
                         for p in nearby_places:
                             map_lats.append(p.get("lat", lat))
                             map_lngs.append(p.get("lng", lng))
@@ -633,7 +635,7 @@ def show():
                                            f'border-radius:99px;padding:2px 10px;">'\
                                            f'✨ Smart Match: {int(ml_score * 100)}%</span>'
                                            
-                            is_open = is_place_open(p.get('activity', ''), _dt.now().hour)
+                            is_open = is_place_open(p.get('activity', ''), _now_ist.hour)
                             open_badge = f'<span style="display:inline-block;margin-top:0.35rem;margin-left:0.5rem;'\
                                          f'font-size:0.75rem;font-weight:700;'\
                                          f'color:{"#2D5016" if is_open else "#922B21"};'\
@@ -673,7 +675,7 @@ def show():
                         if st.button("Generate Smart Itinerary 🪄", use_container_width=True):
                             with st.spinner("Calculating optimal routing times..."):
                                 st.markdown("<h4 style='color:#333333;'>Your Optimal Day Trip 📝</h4>", unsafe_allow_html=True)
-                                curr_h = _dt.now().hour
+                                curr_h = _now_ist.hour
                                 visit_hour = max(9, curr_h + 1)
                                 
                                 for p in nearby_places[:4]:
