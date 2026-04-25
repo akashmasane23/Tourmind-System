@@ -75,6 +75,10 @@ st.markdown("""
 /* ── Global Reset ── */
 *, *::before, *::after { box-sizing: border-box; }
 
+/* ── Hide Streamlit Watermarks ── */
+.stAppDeployButton { display: none !important; }
+footer { visibility: hidden !important; }
+
 html, body, [data-testid="stAppViewContainer"] {
     font-family: var(--ff-body);
     color: var(--text-dark);
