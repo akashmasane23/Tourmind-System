@@ -631,7 +631,7 @@ def show():
                                            f'color:#1A5F7A;background:rgba(46,134,171,0.12);'\
                                            f'border:1px solid rgba(46,134,171,0.25);'\
                                            f'border-radius:99px;padding:2px 10px;">'\
-                                           f'🤖 ML Score: {ml_score:.2f}</span>'
+                                           f'✨ Smart Match: {int(ml_score * 100)}%</span>'
                                            
                             is_open = is_place_open(p.get('activity', ''), _dt.now().hour)
                             open_badge = f'<span style="display:inline-block;margin-top:0.35rem;margin-left:0.5rem;'\
