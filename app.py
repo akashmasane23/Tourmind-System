@@ -81,6 +81,10 @@ footer { visibility: hidden !important; }
 header { visibility: hidden !important; display: none !important; }
 #MainMenu { visibility: hidden !important; }
 [data-testid="manage-app-button"] { display: none !important; }
+[data-testid="stViewerBadge"] { display: none !important; }
+div[class^="viewerBadge"] { display: none !important; }
+div[class*="viewerBadge"] { display: none !important; }
+[data-testid="stStatusWidget"] { display: none !important; }
 
 html, body, [data-testid="stAppViewContainer"] {
     font-family: var(--ff-body);
