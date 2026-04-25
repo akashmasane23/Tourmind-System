@@ -949,6 +949,7 @@ h3 {
     .nav-link .icon { font-size: 11px !important; }
 }
 
+
 </style>
 """, unsafe_allow_html=True)
 

@@ -101,9 +101,9 @@ OPENWEATHER_API_URL = "https://api.openweathermap.org/data/2.5"
 # APP SETTINGS
 # ============================================
 
-APP_TITLE            = "TourMind AI"
-APP_ICON             = "🌍"
-APP_VERSION          = "2.0.0"
+APP_TITLE             = "TourMind AI"
+APP_ICON              = "🌍"
+APP_VERSION           = "2.1.0"    # 2.1.0 — Hybrid ML enhancement layer
 DEFAULT_RESULTS_LIMIT = 10
 
 # ============================================
@@ -113,6 +113,16 @@ DEFAULT_RESULTS_LIMIT = 10
 CACHE_TTL_SHORT  = 1800    # 30 min  — weather, live crowd
 CACHE_TTL_MEDIUM = 3600    # 1 hour  — places, peak hours
 CACHE_TTL_LONG   = 86400   # 24 hrs  — Wikipedia, Unsplash images
+
+# ============================================
+# ML MODEL PATHS
+# ============================================
+
+import os as _os
+_MODELS_DIR              = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "models")
+ML_CROWD_MODEL_PATH      = _os.path.join(_MODELS_DIR, "crowd_rf_model.joblib")
+ML_CROWD_ENCODER_PATH    = _os.path.join(_MODELS_DIR, "crowd_label_encoder.joblib")
+ML_RANKING_MODEL_PATH    = _os.path.join(_MODELS_DIR, "ranking_rf_model.joblib")
 
 # ============================================
 # WIKIPEDIA

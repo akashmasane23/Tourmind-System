@@ -2,6 +2,7 @@
 Place Recommendations Page — Travel/Nature Theme
 """
 import math
+import pandas as pd
 import streamlit as st
 from utils.api_handlers import (
     get_unsplash_image,
@@ -577,7 +578,7 @@ def show():
                 if st.button(label, key=f"pill_{val}", use_container_width=True,
                              type="primary" if st.session_state.num_results == val else "secondary"):
                     st.session_state.num_results = val
-                    # No rerun — session_state already updated, Streamlit re-renders naturally
+                    st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
         num_results = st.session_state.num_results
@@ -638,13 +639,25 @@ def show():
                         unsafe_allow_html=True
                     )
                 else:
-                    seed = abs(hash(row["place_name"])) % 1000
-                    st.image(f"https://picsum.photos/seed/{seed}/800/500", width='stretch')
+                    placeholders = [
+                        "https://images.unsplash.com/photo-1506461883276-594a12b11ea3?q=80&w=800",
+                        "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800",
+                        "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=800",
+                        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800",
+                        "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800"
+                    ]
+                    seed = abs(hash(row["place_name"])) % len(placeholders)
+                    st.image(placeholders[seed], width='stretch')
 
             with inner_col_info:
                 st.markdown("<br>", unsafe_allow_html=True)
+                
+                # Rating logic
+                rating = float(row.get("rating", 4.2)) if not pd.isna(row.get("rating", 4.2)) else 4.2
+                stars = "★" * int(rating) + "☆" * (5 - int(rating))
+                
                 st.markdown(
-                    f'<p class="tm-place-name">{row["place_name"]}</p>',
+                    f'<p class="tm-place-name">{row["place_name"]} <span style="font-size:1.1rem; color:#F4B942;">{stars}</span> <span style="font-size:0.9rem; color:#666;">({rating})</span></p>',
                     unsafe_allow_html=True
                 )
                 st.markdown(f"""
@@ -652,7 +665,7 @@ def show():
                     <span class="tm-meta-pill tm-pill-location">📍 {row['city']}, {row['state']}</span>
                     <span class="tm-meta-pill tm-pill-keyword">🏷️ {row['description_keyword']}</span>
                     <span class="tm-meta-pill tm-pill-activity">🎯 {row['activity_type']}</span>
-                    <span class="tm-meta-pill tm-pill-coords">🗺️ {row['latitude']}, {row['longitude']}</span>
+                    <span class="tm-meta-pill" style="background:rgba(45,80,22,0.1); border:1px solid rgba(45,80,22,0.3); color:#2D5016;">🟢 Open Now</span>
                 </div>
                 """, unsafe_allow_html=True)
 

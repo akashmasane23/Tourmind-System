@@ -99,18 +99,28 @@ _CITY_FALLBACKS = {
 def _unsplash_fallback(query: str, count: int = 1,
                         activity: str = None, city: str = None) -> List[Dict]:
     """
-    Multi-tier fallback:
-    1. Picsum with a landscape-themed seed (deterministic per place name)
-    The seed is kept consistent so the same place always shows the same image.
+    Fallback when Unsplash API fails:
+    Uses a predefined list of high-quality static travel images.
     """
-    # Use a consistent seed so the same place always maps to same image
-    seed = abs(hash(query.lower().strip())) % 1000
+    # Hardcoded beautiful travel placeholders
+    placeholders = [
+        "https://images.unsplash.com/photo-1506461883276-594a12b11ea3?q=80&w=800", # Travel map
+        "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800", # Boat/Mountains
+        "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=800", # Plane/Travel
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800", # Beach
+        "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800", # City
+        "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800", # Van/Roadtrip
+        "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?q=80&w=800", # Camera/Journal
+    ]
+    
+    seed = abs(hash(query.lower().strip())) % len(placeholders)
+    
     return [
         {
-            "url": f"https://picsum.photos/seed/{seed + i}/800/500",
-            "alt": query,
-            "photographer": "Picsum Photos",
-            "photographer_url": "https://picsum.photos"
+            "url": placeholders[(seed + i) % len(placeholders)],
+            "alt": f"Travel destination {i+1}",
+            "photographer": "TourMind AI Placeholder",
+            "photographer_url": "#"
         }
         for i in range(count)
     ]
@@ -121,12 +131,6 @@ def _build_search_variations(place_name: str,
                                city: str = None) -> List[str]:
     """
     Build a smart, ordered list of search queries for a place name.
-    Strategy:
-      1. Exact place name + "india"
-      2. Cleaned place name (remove parenthetical qualifiers)
-      3. City + activity context
-      4. Pure activity-type generic fallback
-      5. Pure city fallback
     """
     variations = []
     name = place_name.strip()
@@ -135,27 +139,26 @@ def _build_search_variations(place_name: str,
     import re
     clean_name = re.sub(r"\s*[(][^)]*[)]", "", name).strip()
 
-    # 1. Exact + country
-    variations.append(f"{name} india")
+    # 1. Exact name
+    variations.append(name)
 
-    # 2. Clean name + india
+    # 2. Clean name
     if clean_name != name:
-        variations.append(f"{clean_name} india")
+        variations.append(clean_name)
 
-    # 3. Clean name alone
-    variations.append(clean_name)
-
-    # 4. City context
+    # 3. Clean name + city
     if city:
         city_l = city.lower()
-        variations.append(f"{clean_name} {city_l}")
+        if city_l not in clean_name.lower():
+            variations.append(f"{clean_name} {city_l}")
+        
         # City-only fallback terms
         for c_key, c_terms in _CITY_FALLBACKS.items():
             if c_key in city_l:
                 variations.extend(c_terms[:2])
                 break
 
-    # 5. Activity-type generic terms
+    # 4. Activity-type generic terms
     if activity_type:
         act_l = activity_type.lower()
         for a_key, a_terms in _ACTIVITY_FALLBACKS.items():
@@ -163,8 +166,8 @@ def _build_search_variations(place_name: str,
                 variations.extend(a_terms[:2])
                 break
 
-    # 6. Last resort — "india tourism"
-    variations.append("india tourism landmark")
+    # 5. Last resort generic fallback
+    variations.append(f"{clean_name} landmark travel")
 
     # Deduplicate while preserving order
     seen = set()
@@ -189,6 +192,8 @@ def get_unsplash_image(query: str, count: int = 1,
     - Never returns a broken image — always falls back to Picsum
     - Validates that returned images actually have a usable URL
     """
+    _cache_buster = 2 # Forces Streamlit to invalidate old cached results
+    
     if not UNSPLASH_ACCESS_KEY or UNSPLASH_ACCESS_KEY == "YOUR_UNSPLASH_ACCESS_KEY":
         return _unsplash_fallback(query, count, activity_type, city)
 

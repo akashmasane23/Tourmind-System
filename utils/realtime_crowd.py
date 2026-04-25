@@ -1,14 +1,20 @@
 """
-TourMind — Live Crowd Predictor
+TourMind — Live Crowd Predictor (Hybrid Rule-Based + ML)
 Used by: pages/peak_hours_nearby.py
 
-Improvements over original:
+Original rule-based system (unchanged):
   - Holiday/festival calendar boosts crowd on public holidays
   - Finer time-of-day scoring (dawn/night correctly = Low)
   - Weather factor checks both nested & flat secrets
   - Confidence label returned alongside level
   - Returns structured dict so callers get richer data
   - predict_live_crowd() still returns plain string (backward compat)
+
+ML Enhancement (added on top — does NOT replace rule logic):
+  - RandomForestClassifier trained on synthetic data
+  - Uses rule_score as a feature (along with hour, weekday, etc.)
+  - Adds 'ml_prediction' and 'ml_confidence' keys to returned dict
+  - Falls back silently if model files not present
 """
 
 from datetime import date, datetime
@@ -59,46 +65,57 @@ def _get_api_key_weather() -> Optional[str]:
     return os.getenv("OPENWEATHER_API_KEY")
 
 
+@st.cache_data(ttl=1800)
 def get_weather_factor(city: str = "Pune") -> tuple[float, str]:
     """
     Fetch live weather and return (factor, description).
     factor > 1  → more people likely out
     factor < 1  → fewer people likely out
-
-    Returns (1.0, 'Unknown') if key missing or request fails.
     """
     key = _get_api_key_weather()
-    if not key:
-        return 1.0, "Unknown"
+    if key:
+        try:
+            resp = requests.get(
+                "https://api.openweathermap.org/data/2.5/weather",
+                params={"q": city, "appid": key},
+                timeout=5,
+            )
+            if resp.status_code == 200:
+                data        = resp.json()
+                weather     = data["weather"][0]["main"].lower()
+                description = data["weather"][0]["description"].capitalize()
+                temp_c      = round(data["main"]["temp"] - 273.15, 1)
 
+                if "thunderstorm" in weather: return 0.5, f"{description} ({temp_c}°C)"
+                if "rain" in weather or "drizzle" in weather: return 0.7, f"{description} ({temp_c}°C)"
+                if "snow" in weather or "fog" in weather or "mist" in weather: return 0.8, f"{description} ({temp_c}°C)"
+                if "clear" in weather: return 1.2, f"{description} ({temp_c}°C)"
+                return 1.0, f"{description} ({temp_c}°C)"
+        except Exception:
+            pass
+
+    # Fallback to Open-Meteo (No API key required)
     try:
-        resp = requests.get(
-            "https://api.openweathermap.org/data/2.5/weather",
-            params={"q": city, "appid": key},
-            timeout=5,
-        )
-        if resp.status_code != 200:
-            return 1.0, "Unknown"
-
-        data        = resp.json()
-        weather     = data["weather"][0]["main"].lower()
-        description = data["weather"][0]["description"].capitalize()
-
-        if "thunderstorm" in weather:
-            return 0.5, description
-        if "rain" in weather or "drizzle" in weather:
-            return 0.7, description
-        if "snow" in weather or "fog" in weather or "mist" in weather:
-            return 0.8, description
-        if "clear" in weather:
-            return 1.2, description
-        if "cloud" in weather:
-            return 1.0, description
-
-        return 1.0, description
-
+        geo_resp = requests.get(f"https://geocoding-api.open-meteo.com/v1/search?name={city}&count=1", timeout=5)
+        if geo_resp.status_code == 200:
+            geo_data = geo_resp.json().get("results", [])
+            if geo_data:
+                lat, lon = geo_data[0]["latitude"], geo_data[0]["longitude"]
+                weather_resp = requests.get(f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true", timeout=5)
+                if weather_resp.status_code == 200:
+                    w_data = weather_resp.json().get("current_weather", {})
+                    code = w_data.get("weathercode", 0)
+                    temp = w_data.get("temperature", 25)
+                    
+                    if code in [95, 96, 99]: return 0.5, f"Thunderstorm ({temp}°C)"
+                    if code in [51, 53, 55, 61, 63, 65, 66, 67]: return 0.7, f"Rain ({temp}°C)"
+                    if code in [45, 48, 71, 73, 75, 77]: return 0.8, f"Fog/Snow ({temp}°C)"
+                    if code == 0: return 1.2, f"Clear Sky ({temp}°C)"
+                    return 1.0, f"Cloudy ({temp}°C)"
     except Exception:
-        return 1.0, "Unknown"
+        pass
+
+    return 1.0, "Unknown"
 
 
 # ============================================
@@ -145,38 +162,63 @@ def _score_to_level(score: float) -> tuple[str, str]:
 # PUBLIC API
 # ============================================
 
-def predict_crowd_detail(city: str = "Pune") -> dict:
+def predict_crowd_detail(city: str = "Pune", hour: int = None) -> dict:
     """
     Full crowd prediction with all contributing factors.
 
     Returns:
         {
-          "level":        str   — "Low" / "Medium" / "High" / "Very High"
-          "score":        float — raw numeric score
-          "confidence":   str   — "High" / "Medium"
-          "time_slot":    str   — e.g. "Evening Rush"
-          "day_type":     str   — e.g. "Sunday" / "Public Holiday"
-          "weather_desc": str   — e.g. "Clear sky"
+          "level":         str   — "Low" / "Medium" / "High" / "Very High"  (rule-based)
+          "score":         float — raw numeric score
+          "confidence":    str   — "High" / "Medium"  (rule-based confidence label)
+          "time_slot":     str   — e.g. "Evening Rush"
+          "day_type":      str   — e.g. "Sunday" / "Public Holiday"
+          "weather_desc":  str   — e.g. "Clear sky"
           "factors": {
               "time":    float,
               "day":     float,
               "weather": float,
           }
+          # ── ML Enhancement fields (None if model not loaded) ──
+          "rule_based":    str   — same as "level" (explicit label for UI comparison)
+          "ml_prediction": str | None  — ML model output
+          "ml_confidence": float | None — probability of the predicted class
         }
     """
     now      = datetime.now()
-    hour     = now.hour
+    current_hour = now.hour if hour is None else hour
     weekday  = now.weekday()
     holiday  = _is_holiday(now.date())
 
-    time_sc,    time_slot    = _time_score(hour)
+    time_sc,    time_slot    = _time_score(current_hour)
     day_sc,     day_type     = _day_score(weekday, holiday)
     weather_sc, weather_desc = get_weather_factor(city)
 
     score = time_sc * day_sc * weather_sc
     level, confidence = _score_to_level(score)
 
+    # ── ML Enhancement: call ml_service if available ──────────────────
+    # Imported here (lazy) to avoid circular imports and keep startup fast.
+    ml_prediction = None
+    ml_confidence = None
+    try:
+        from services.ml_service import ml_service
+        ml_result = ml_service.predict_crowd_ml(
+            hour=current_hour,
+            weekday=weekday,
+            is_holiday=int(holiday),
+            weather_factor=weather_sc,
+            rule_score=score,
+        )
+        if ml_result:
+            ml_prediction = ml_result["ml_prediction"]
+            ml_confidence = ml_result["confidence"]
+    except Exception:
+        pass  # silently fall back — rule-based result is always returned
+    # ─────────────────────────────────────────────────────────────────
+
     return {
+        # ── Original keys (unchanged — backward compatible) ──
         "level":        level,
         "score":        round(score, 3),
         "confidence":   confidence,
@@ -188,6 +230,10 @@ def predict_crowd_detail(city: str = "Pune") -> dict:
             "day":     round(day_sc,     2),
             "weather": round(weather_sc, 2),
         },
+        # ── ML Enhancement keys (new) ──
+        "rule_based":    level,
+        "ml_prediction": ml_prediction,
+        "ml_confidence": ml_confidence,
     }
 
 

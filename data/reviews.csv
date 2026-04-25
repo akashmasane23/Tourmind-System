@@ -1,54 +1,101 @@
 place,user_name,rating,comment,date
-Balewadi High Street,Ayush,5,Great place for shopping and dining.,2025-06-04 19:15:00
-Paragliding at Kamshet,Omkar,5,Thrilling experience with amazing aerial views!,2025-06-16 08:15:00
-Lonavala Tiger Point,Arjun,5,Stunning valley views especially during monsoon.,2025-06-24 17:15:00
-Bhandardara (Day Trip),Ansh,3,Nice,2025-07-04 10:30:00
-Patil Wada Vishrambaug Wada,Kiran,4,Old Pune architecture at its best.,2025-07-18 13:00:00
-Mulshi Lake and Dam,Ashwin,5,Amazing scenic beauty and calm environment.,2025-08-23 12:30:00
-Lonavala Tiger Point,Kshitij,5,Beautiful View,2025-08-23 14:45:00
-Bhandardara (Day Trip),Tanvi,5,Waterfalls and greenery are breathtaking.,2025-09-16 17:30:00
-ISKCON NVCC Temple,Megha,5,Peaceful and very clean temple premises.,2025-09-21 14:30:00
-Bund Garden,Isha,4,Good for relaxing and family picnics.,2025-09-23 09:00:00
-Mulshi Lake and Dam,Ansh,4,Nice view,2025-09-26 20:00:00
-Lavasa,Pooja,4,Beautiful lakeside city for a short trip.,2025-09-28 15:00:00
-Karla Caves (Lonavala),Sameer,5,Ancient caves with fascinating architecture.,2025-09-28 20:00:00
-Bund Garden,Manish,5,Greenary,2025-10-17 21:15:00
-FC Road,Sanket,4,Famous street for shopping and street food.,2025-10-21 09:15:00
-Bhandardara (Day Trip),John,3,Nice,2025-11-09 13:30:00
-Khunya Murlidhar Temple,Suresh,5,Very old and divine temple.,2025-12-01 20:30:00
-Gram Sanskruti Udyan Village Park,Pallavi,4,Good place to learn village culture.,2025-12-11 08:30:00
-Bedse Caves (Maval),Vikas,4,Less crowded and peaceful caves.,2025-12-12 11:45:00
-Lonavala Tiger Point,Kshitij,4,View is amazing,2026-03-01 18:15:00
-Rajiv Gandhi Zoological Park,Raj,4,Nice zoo with wide variety of animals.,2026-03-15 10:45:00
-Shivneri Fort (Near Pune),Swapnil,5,Historic fort with amazing surroundings.,2026-03-23 10:00:00
-Okayama Friendship Garden,Parth,5,Greenery,2026-03-28 18:19:27
-Vetal Tekdi,Aditya,5,Best place for morning hikes and nature lovers.,2026-03-30 13:00:00
-Chatushringi Temple,Komal,5,Holy place with beautiful city view.,2026-04-06 11:00:00
-Sinhagad Fort,Pawan,4,Trecking experience is amazing,2026-04-08 17:15:00
-Blades of Glory Cricket Museum,Ravi,5,Perfect place for cricket lovers.,2026-04-18 16:30:00
-Pawna Lake,Sonal,5,Perfect for camping and night stay.,2026-04-22 20:30:00
-Khadakwasla Dam,Neha,5,Great spot for monsoon outings.,2026-04-24 08:00:00
-Shaniwar Wada,Akash,5,An iconic fort with rich Maratha history. Must visit!,2026-05-01 10:15:00
-Osho Teerth Park,Varun,5,Extremely serene and well maintained park.,2026-05-13 18:00:00
-Shaniwar Wada,Ansh,5,Historical place,2026-05-17 12:00:00
-Koregaon Park Lane 7,Simran,5,Lively cafes and vibrant nightlife.,2026-05-24 13:30:00
-Pawna Lake,Nakul,4,View is awesome,2026-05-26 21:00:00
-Aga Khan Palace,Mrunal,5,Beautiful palace with deep historical importance.,2026-06-01 11:20:00
-Baner Pashan Biodiversity Park,Nikhil,4,Nice nature trail inside the city.,2026-06-09 14:00:00
-Peacock Bay,Rahul,5,Beautiful lake view and peaceful surroundings.,2026-06-15 11:15:00
-JM Road,Tejas,4,Central place with good shopping options.,2026-06-26 12:00:00
-Sinhagad Fort,Aniket,5,Amazing trek and breathtaking views from the top.,2026-07-01 07:45:00
-Bhushi Dam (Lonavala),Rutuja,4,Fun place but very crowded in season.,2026-07-01 11:00:00
-Pataleshwar Cave Temple,Rohit,4,Peaceful ancient cave temple in the city.,2026-07-01 17:10:00
-Raja Dinkar Kelkar Museum,Priya,5,Great collection of artifacts and traditional items.,2026-08-01 13:30:00
-Dagdusheth Halwai Ganpati Temple,Kshitij,5,Very spiritual place with positive energy.,2026-09-01 09:00:00
-Parvati Hill Temple,Sneha,4,Good place for sunset and city views.,2026-09-01 18:45:00
-Pashan Lake,Amit,4,Calm place for evening walks and bird watching.,2026-10-01 17:30:00
-Empress Botanical Garden,Vaishali,4,Nice greenery and peaceful environment.,2026-11-01 10:50:00
-Okayama Friendship Garden,Riya,5,"A beautiful Japanese-style garden, very relaxing.",2026-11-01 16:00:00
-National War Memorial Southern Command,Sagar,5,A well-maintained tribute to soldiers.,2026-12-01 12:15:00
-Shinde Chhatri,Pratik,4,Architecturally impressive and calm place.,2026-12-01 15:40:00
-Rajiv Gandhi Zoological Park,Ninad,5,Best zoo i have ever seen,2026-03-29 11:33:31
-FC Road,Akash,5,Best for shopping,2026-03-29 11:38:49
-Shaniwar wada,Kj,5,Great place,2026-03-29 12:56:06
-fc road,Ash,5,Nice place for shopping,2026-03-30 09:46:08
+Shaniwar Wada,Shaurya,4,Great spot for photography.,2025-06-25 11:14:00
+Aga Khan Palace,Diya,3,Good place for a short weekend trip.,2025-06-16 13:35:00
+Sinhagad Fort,Myra,4,Loved the serene environment.,2025-06-13 17:41:00
+Pataleshwar Cave Temple,Aadya,5,Food nearby is excellent.,2025-10-12 18:22:00
+Raja Dinkar Kelkar Museum,Zara,4,Amazing place to visit with family.,2025-07-18 15:32:00
+Dagdusheth Halwai Ganpati Temple,Reyansh,5,Loved the serene environment.,2025-06-04 13:29:00
+Parvati Hill Temple,Vivaan,4,A bit crowded on weekends but worth it.,2025-12-27 18:36:00
+Pashan Lake,Sai,3,Food nearby is excellent.,2025-08-11 15:42:00
+Okayama Friendship Garden,Ananya,3,Beautiful architecture and history.,2025-09-18 14:44:00
+Empress Botanical Garden,Krishna,5,A must-visit when in Pune.,2025-08-17 11:33:00
+National War Memorial,Zara,5,Amazing place to visit with family.,2025-11-08 09:45:00
+Shinde Chhatri,Ishaan,3,A bit crowded on weekends but worth it.,2025-12-13 18:27:00
+Khadakwasla Dam,Atharv,3,Beautiful architecture and history.,2025-11-20 15:50:00
+Peacock Bay,Myra,3,A must-visit when in Pune.,2025-12-27 18:26:00
+Bund Garden,Saanvi,4,Loved the serene environment.,2025-11-03 09:39:00
+Osho Teerth Park,Shaurya,4,Great spot for photography.,2025-06-03 16:29:00
+Vetal Tekdi,Sai,3,Great spot for photography.,2025-08-26 13:10:00
+Paragliding at Kamshet,Ishaan,5,A must-visit when in Pune.,2025-11-27 17:12:00
+Lavasa,Reyansh,4,Beautiful architecture and history.,2025-06-07 16:44:00
+Rajiv Gandhi Zoological Park,Ayaan,5,A must-visit when in Pune.,2025-10-25 14:40:00
+ISKCON NVCC Temple,Sai,5,A bit crowded on weekends but worth it.,2025-12-17 17:46:00
+Balewadi High Street,Aditya,5,Great spot for photography.,2025-12-15 17:48:00
+Koregaon Park,Krishna,5,A must-visit when in Pune.,2025-09-09 14:42:00
+FC Road,Reyansh,3,Loved the serene environment.,2025-08-04 18:44:00
+JM Road,Sai,5,Beautiful architecture and history.,2025-10-10 18:15:00
+Vishrambaug Wada,Ananya,5,Amazing place to visit with family.,2025-09-20 13:18:00
+Khunya Murlidhar Temple,Ananya,5,Very peaceful and well maintained.,2025-06-04 14:34:00
+Chatushringi Temple,Vivaan,5,Very peaceful and well maintained.,2025-09-27 13:11:00
+Baner Pashan Biodiversity Park,Vivaan,5,Amazing place to visit with family.,2025-09-20 18:31:00
+Blades of Glory Cricket Museum,Kavya,4,Loved the serene environment.,2025-07-07 09:15:00
+Shivneri Fort,Zara,4,Highly recommended for nature lovers.,2025-08-21 17:39:00
+Lonavala Tiger Point,Aarohi,4,A bit crowded on weekends but worth it.,2025-08-25 18:49:00
+Bhushi Dam,Aarohi,4,Good place for a short weekend trip.,2025-09-09 11:28:00
+Karla Caves,Ayaan,3,Very peaceful and well maintained.,2025-11-05 12:40:00
+Bedse Caves,Navya,5,Amazing place to visit with family.,2025-12-05 16:31:00
+Pawna Lake,Shaurya,3,Very peaceful and well maintained.,2025-10-06 14:17:00
+Mulshi Lake and Dam,Myra,4,A must-visit when in Pune.,2025-12-03 18:33:00
+Bhandardara,Ayaan,5,Very peaceful and well maintained.,2025-10-14 17:41:00
+Lal Mahal,Myra,3,A must-visit when in Pune.,2025-06-12 15:16:00
+Tribal Museum Pune,Aarav,5,Great spot for photography.,2025-11-21 11:45:00
+Saras Baug,Aadya,5,Very peaceful and well maintained.,2025-09-08 18:11:00
+Kamala Nehru Park,Shaurya,3,Good place for a short weekend trip.,2025-11-04 16:50:00
+Sambhaji Park,Atharv,3,Amazing place to visit with family.,2025-07-08 13:29:00
+Pune Railway Museum,Navya,4,Loved the serene environment.,2025-08-18 13:17:00
+Omkareshwar Temple,Aadya,3,Great spot for photography.,2025-06-19 11:14:00
+Taljai Hill,Navya,4,Great spot for photography.,2025-11-19 11:26:00
+Hanuman Tekdi,Vivaan,3,A bit crowded on weekends but worth it.,2025-06-01 13:13:00
+Katraj Snake Park,Kavya,3,Good place for a short weekend trip.,2025-08-28 17:15:00
+Katraj Lake,Aditya,4,Highly recommended for nature lovers.,2025-09-22 15:12:00
+Pune War Cemetery,Diya,4,Beautiful architecture and history.,2025-11-20 13:19:00
+Ohel David Synagogue,Saanvi,4,Very peaceful and well maintained.,2025-11-22 14:26:00
+Amanora Mall,Saanvi,5,A must-visit when in Pune.,2025-09-08 13:13:00
+Phoenix Marketcity,Vivaan,3,Highly recommended for nature lovers.,2025-06-15 09:50:00
+Seasons Mall,Ayaan,3,Highly recommended for nature lovers.,2025-07-13 15:32:00
+Westend Mall,Kavya,3,Good place for a short weekend trip.,2025-08-13 09:50:00
+Kalyani Nagar,Zara,5,Good place for a short weekend trip.,2025-09-01 17:31:00
+Mandai Market,Ishaan,4,Beautiful architecture and history.,2025-06-02 17:46:00
+Imagica Theme Park,Ananya,5,Great spot for photography.,2025-06-10 14:44:00
+Della Adventure Park,Saanvi,4,Amazing place to visit with family.,2025-07-25 13:33:00
+Fergusson College,Saanvi,4,Amazing place to visit with family.,2025-08-04 09:40:00
+College of Engineering Pune,Ishaan,3,Food nearby is excellent.,2025-12-13 11:15:00
+Pune University,Vivaan,4,Amazing place to visit with family.,2025-06-10 13:26:00
+National Film Archive,Sai,4,Food nearby is excellent.,2025-12-28 12:10:00
+Kasba Ganpati Temple,Atharv,3,Food nearby is excellent.,2025-12-05 16:27:00
+Kesari Wada,Aarav,3,Food nearby is excellent.,2025-12-08 12:18:00
+Deccan Gymkhana,Arjun,3,Good place for a short weekend trip.,2025-12-20 14:20:00
+Chaturshringi Wildlife,Ishaan,3,A bit crowded on weekends but worth it.,2025-06-03 16:35:00
+Pashan Tekdi,Diya,4,Good place for a short weekend trip.,2025-09-15 18:29:00
+Pune Cantonment,Vihaan,3,A must-visit when in Pune.,2025-09-13 10:13:00
+Wet N Joy Water Park,Krishna,5,Loved the serene environment.,2025-12-15 16:48:00
+Xthrill Water Park,Arjun,5,A must-visit when in Pune.,2025-10-20 16:43:00
+Appu Ghar Pune,Aadya,4,A bit crowded on weekends but worth it.,2025-11-15 12:13:00
+Panshet Dam,Shaurya,4,Amazing place to visit with family.,2025-11-27 09:46:00
+Varasgaon Dam,Myra,4,A must-visit when in Pune.,2025-07-23 11:14:00
+Temghar Dam,Diya,4,A bit crowded on weekends but worth it.,2025-09-20 09:49:00
+Neelkantheshwar,Saanvi,3,Amazing place to visit with family.,2025-09-15 17:15:00
+Torna Fort,Aarav,4,Amazing place to visit with family.,2025-11-02 12:46:00
+Rajgad Fort,Diya,5,A must-visit when in Pune.,2025-08-01 17:34:00
+Tikona Fort,Ayaan,3,A must-visit when in Pune.,2025-11-06 11:13:00
+Lohagad Fort,Zara,5,Great spot for photography.,2025-11-24 18:48:00
+Visapur Fort,Ishaan,3,Beautiful architecture and history.,2025-09-07 09:18:00
+Korigad Fort,Ananya,3,Food nearby is excellent.,2025-07-15 17:24:00
+Tung Fort,Aarohi,4,Loved the serene environment.,2025-09-17 14:30:00
+Purandar Fort,Diya,3,Highly recommended for nature lovers.,2025-08-24 09:46:00
+Rohida Fort,Myra,4,Great spot for photography.,2025-10-16 16:38:00
+Bhuleshwar Temple,Vivaan,5,Beautiful architecture and history.,2025-12-05 12:18:00
+Ranjangaon Mahaganpati,Aditya,3,Food nearby is excellent.,2025-11-17 09:42:00
+Theur Chintamani,Ananya,3,Amazing place to visit with family.,2025-06-02 15:50:00
+Morgaon Mayureshwar,Ayaan,5,A bit crowded on weekends but worth it.,2025-09-19 10:45:00
+Lenyadri Girijatmaj,Shaurya,4,Amazing place to visit with family.,2025-08-21 17:46:00
+Ozar Vighnahar,Shaurya,4,Beautiful architecture and history.,2025-12-22 15:24:00
+BAPS Shri Swaminarayan Mandir,Zara,5,Food nearby is excellent.,2025-09-14 18:15:00
+Ekvira Aai Temple,Aarav,4,A bit crowded on weekends but worth it.,2025-07-06 11:49:00
+Prati Shirdi Shirgaon,Navya,5,Good place for a short weekend trip.,2025-10-01 18:13:00
+Dehu Gatha Mandir,Zara,4,Amazing place to visit with family.,2025-06-07 11:41:00
+Alandi,Navya,5,Good place for a short weekend trip.,2025-12-14 10:25:00
+Ramdara Temple,Shaurya,4,A bit crowded on weekends but worth it.,2025-06-03 16:45:00
+Bopdev Ghat,Sai,5,Good place for a short weekend trip.,2025-12-06 16:38:00
+Dive Ghat,Kavya,4,Good place for a short weekend trip.,2025-09-06 12:45:00
+Mastani Mahal,Vihaan,5,Great spot for photography.,2025-08-23 12:50:00

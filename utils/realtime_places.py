@@ -1,5 +1,5 @@
 """
-TourMind — Nearby Attractions
+TourMind — Nearby Attractions (Hybrid Distance + ML Ranking)
 Used by: pages/peak_hours_nearby.py
 
 Replaced Google Places API with:
@@ -7,8 +7,13 @@ Replaced Google Places API with:
   2. Wikipedia + Unsplash enrichment for photos & descriptions
   3. Overpass API fallback (free OpenStreetMap data, no key needed)
 
-get_nearby_attractions(lat, lng) returns same structure as before
-so peak_hours_nearby.py needs zero changes.
+ML Enhancement (added on top — does NOT replace Haversine logic):
+  4. RandomForestRegressor ranks results by ml_score (0–1)
+     Features: distance, rating, activity_match, hour_relevance
+     Falls back to distance sort if model not loaded.
+
+get_nearby_attractions(lat, lng) returns the same structure as before
+with ml_score added; peak_hours_nearby.py has been updated accordingly.
 """
 
 import math
@@ -71,17 +76,17 @@ def _load_places_df() -> pd.DataFrame:
 # UNSPLASH FALLBACK PHOTO
 # ============================================
 
+@st.cache_data(ttl=86400)
 def _get_place_photo(place_name: str) -> str:
     """
-    Try Unsplash API for a photo; fall back to Picsum if unavailable.
-    Returns a usable image URL.
+    Try Unsplash API for a photo; fall back to a beautiful static travel placeholder.
     """
     try:
         key = st.secrets.get("UNSPLASH_ACCESS_KEY") or st.secrets.get("UNSPLASH_API_KEY")
     except Exception:
         key = None
 
-    if key:
+    if key and key != "YOUR_UNSPLASH_ACCESS_KEY":
         try:
             resp = requests.get(
                 "https://api.unsplash.com/search/photos",
@@ -96,15 +101,25 @@ def _get_place_photo(place_name: str) -> str:
         except Exception:
             pass
 
-    # Deterministic Picsum fallback — no API key needed
-    seed = abs(hash(place_name)) % 1000
-    return f"https://picsum.photos/seed/{seed}/800/500"
+    # Hardcoded beautiful static travel placeholders
+    placeholders = [
+        "https://images.unsplash.com/photo-1506461883276-594a12b11ea3?q=80&w=800", # Travel map
+        "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800", # Boat/Mountains
+        "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=800", # Plane/Travel
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800", # Beach
+        "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800", # City
+        "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800", # Van/Roadtrip
+        "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?q=80&w=800", # Camera/Journal
+    ]
+    seed = abs(hash(place_name)) % len(placeholders)
+    return placeholders[seed]
 
 
 # ============================================
 # OVERPASS (OpenStreetMap) FALLBACK
 # ============================================
 
+@st.cache_data(ttl=86400)
 def _get_osm_nearby(
     lat: float, lng: float,
     radius_m: int = 5000,
@@ -148,12 +163,15 @@ def _get_osm_nearby(
             dist   = _haversine_km(lat, lng, el_lat, el_lon)
 
             results.append({
-                "name":     name,
-                "rating":   tags.get("stars", "N/A"),
-                "vicinity": tags.get("addr:city") or tags.get("addr:suburb") or "Nearby",
-                "photo":    _get_place_photo(name),
+                "name":        name,
+                "rating":      tags.get("stars", "N/A"),
+                "vicinity":    tags.get("addr:city") or tags.get("addr:suburb") or "Nearby",
+                "photo":       _get_place_photo(name),
                 "distance_km": round(dist, 2),
-                "source":   "OpenStreetMap",
+                "activity":    "",          # OSM nodes don't carry activity_type
+                "source":      "OpenStreetMap",
+                "lat":         el_lat,
+                "lng":         el_lon,
             })
 
         return sorted(results, key=lambda x: x["distance_km"])
@@ -172,26 +190,33 @@ def get_nearby_attractions(
     radius_km: float = 10.0,
     limit: int = 6,
     exclude_name: Optional[str] = None,
+    user_hour: Optional[int] = None,
+    user_preference: str = "",
 ) -> list[dict]:
     """
     Find nearby tourist attractions using local database + OSM fallback.
+
     Returns same structure as original Google Places version:
-      [{"name", "rating", "vicinity", "photo", "distance_km"}, ...]
+      [{"name", "rating", "vicinity", "photo", "distance_km",
+        "ml_score", ...}, ...]
 
     Priority order:
       1. Local places.csv  (instant, no API call)
       2. OpenStreetMap Overpass API (free, no key)
+      3. ML ranking layer  (adds ml_score, re-sorts by it)
 
     Args:
-        lat:          Centre latitude.
-        lng:          Centre longitude.
-        radius_km:    Search radius in kilometres (default 10 km).
-        limit:        Max results to return (default 6).
-        exclude_name: Optionally exclude the place being searched itself.
+        lat:             Centre latitude.
+        lng:             Centre longitude.
+        radius_km:       Search radius in kilometres (default 10 km).
+        limit:           Max results to return (default 6).
+        exclude_name:    Optionally exclude the place being searched itself.
+        user_hour:       Hour of day for time-of-day relevance (defaults to now).
+        user_preference: User's preferred activity type for ML ranking.
     """
     results = []
 
-    # ── 1. Local database ─────────────────────
+    # ── 1. Local database ─────────────────────────────
     df = _load_places_df()
 
     if not df.empty:
@@ -221,9 +246,11 @@ def get_nearby_attractions(
                 "distance_km": round(row["distance_km"], 2),
                 "activity":    row.get("activity_type", ""),
                 "source":      "Local Database",
+                "lat":         row["latitude"],
+                "lng":         row["longitude"],
             })
 
-    # ── 2. OSM fallback if local DB has < 3 results ──
+    # ── 2. OSM fallback if local DB has < 3 results ───────
     if len(results) < 3:
         osm_results = _get_osm_nearby(lat, lng, radius_m=int(radius_km * 1000), limit=limit)
 
@@ -235,5 +262,20 @@ def get_nearby_attractions(
                 existing_names.add(place["name"].lower())
 
         results = results[:limit]
+
+    # ── 3. ML Ranking Layer (enhancement — non-destructive) ───
+    # Adds 'ml_score' field to each place and re-sorts the list.
+    # Falls back to distance sort if model not loaded.
+    try:
+        from services.ml_service import ml_service
+        results = ml_service.rank_places_ml(
+            places=results,
+            user_hour=user_hour,
+            user_preference=user_preference,
+        )
+    except Exception:
+        # Ensure ml_score key always present even on error
+        for p in results:
+            p.setdefault("ml_score", 0.0)
 
     return results

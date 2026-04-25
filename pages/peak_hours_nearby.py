@@ -3,9 +3,12 @@ Peak Hours & Nearby Page — Travel/Nature Theme
 """
 
 import streamlit as st
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 from utils.data_handlers import load_peak_hours, get_place_peak_hours, load_places
 from utils.realtime_places import get_nearby_attractions
-from utils.realtime_crowd import predict_live_crowd
+from utils.realtime_crowd import predict_crowd_detail
 
 
 # ============================================
@@ -38,6 +41,11 @@ def get_coordinates(place_name):
         return None, None
     row = result.iloc[0]
     return row["latitude"], row["longitude"]
+
+def is_place_open(activity_type: str, hour: int) -> bool:
+    from services.ml_service import _ACTIVITY_HOURS
+    lo, hi = _ACTIVITY_HOURS.get(str(activity_type).lower(), (8, 20))
+    return lo <= hour <= hi
 
 
 # ============================================
@@ -343,6 +351,7 @@ def show():
             "🔍 Search Place",
             placeholder="e.g. Shaniwar Wada, Aga Khan Palace…"
         )
+    user_preference = "any"
     with col_btn:
         st.markdown("<br>", unsafe_allow_html=True)
         search_clicked = st.button("Search 🔍", use_container_width=True)
@@ -352,11 +361,18 @@ def show():
     # ============================================
 
     if search_clicked:
-
         if not place_search.strip():
             st.error("⚠️ Please enter a place name to search.")
+            st.session_state["peak_search_query"] = None
         else:
-            info = get_place_peak_hours(place_search)
+            st.session_state["peak_search_query"] = place_search.strip()
+
+    active_query = st.session_state.get("peak_search_query")
+    if active_query:
+        # Override place_search for downstream code so it uses the active query
+        place_search = active_query 
+        if True: # dummy block to preserve existing indentation
+            info = get_place_peak_hours(active_query)
 
             if not info:
                 st.markdown("""
@@ -434,26 +450,97 @@ def show():
                 </div>
                 """, unsafe_allow_html=True)
 
-                # Live crowd
-                live_level = predict_live_crowd("Pune")
-                live_val   = crowd_to_value(live_level)
+                # Live crowd (hybrid: rule-based + ML)
+                crowd_detail = predict_crowd_detail("Pune")
+                live_level   = crowd_detail["level"]
+                live_val     = crowd_to_value(live_level)
                 live_c1, live_c2 = crowd_to_color(live_level)
-                live_pct   = int((live_val / 4) * 100)
+                
+                ml_pred_curr = crowd_detail.get("ml_prediction")
+                gauge_val = crowd_to_value(ml_pred_curr) if ml_pred_curr else live_val
+                gauge_color = crowd_to_color(ml_pred_curr)[0] if ml_pred_curr else live_c1
+                gauge_label = ml_pred_curr if ml_pred_curr else live_level
+                
+                fig_gauge = go.Figure(go.Indicator(
+                    mode = "gauge",
+                    value = gauge_val,
+                    title = {'text': f"🔴 Live Crowd Status: {gauge_label}", 'font': {'size': 20, 'color': '#333333', 'family': 'Playfair Display'}},
+                    gauge = {
+                        'axis': {'range': [0, 4.5], 'tickwidth': 1, 'tickcolor': "#333333", 'tickmode': 'array', 'tickvals': [1, 2, 3, 4], 'ticktext': ['Low', 'Medium', 'High', 'Very High']},
+                        'bar': {'color': gauge_color, 'thickness': 0.3},
+                        'bgcolor': "rgba(255,255,255,0.05)",
+                        'borderwidth': 0,
+                        'bordercolor': "gray",
+                        'steps': [
+                            {'range': [0, 1.5], 'color': "rgba(74,124,89,0.15)"},
+                            {'range': [1.5, 2.5], 'color': "rgba(201,169,110,0.15)"},
+                            {'range': [2.5, 3.5], 'color': "rgba(232,132,90,0.15)"},
+                            {'range': [3.5, 4.5], 'color': "rgba(192,57,43,0.15)"}],
+                    }
+                ))
+                fig_gauge.update_layout(paper_bgcolor="rgba(0,0,0,0)", font={'color': "#333333", 'family': "Nunito"}, height=280, margin=dict(l=20, r=20, t=50, b=20))
+                
+                st.plotly_chart(fig_gauge, use_container_width=True)
 
-                st.markdown(f"""
-                <div class="tm-crowd-wrap" style="background:linear-gradient(135deg,{live_c1}18,{live_c2}0d); border:1.5px solid {live_c1}44;">
-                    <p class="tm-crowd-label" style="color:{live_c1};">🔴 Live Crowd Now (AI Prediction)</p>
-                    <div class="tm-crowd-row">
-                        <div class="tm-crowd-bar-outer">
-                            <div class="tm-crowd-bar-inner"
-                                 style="width:{live_pct}%; background:linear-gradient(90deg,{live_c1},{live_c2});"></div>
-                        </div>
-                        <span class="tm-crowd-badge" style="color:{live_c1};">
-                            {crowd_to_emoji(live_level)} {live_level}
-                        </span>
+                # ── 1. PEAK HOUR TREND GRAPH & PIE CHART ──
+                st.markdown('<hr class="tm-divider">', unsafe_allow_html=True)
+                st.markdown("""
+                <div class="tm-sec-head">
+                    <div class="icon-box" style="background:linear-gradient(135deg,#4A7C59,#2D5016);">📈</div>
+                    <div>
+                        <p class="sec-title">Today's Crowd Trends</p>
+                        <p class="sec-sub">Best Time to Visit Today</p>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
+
+                with st.spinner("Generating hourly predictions..."):
+                    hours = list(range(24))
+                    rule_scores = []
+                    ml_scores = []
+                    rule_levels = []
+                    
+                    for h in hours:
+                        dtl = predict_crowd_detail(city=place_search, hour=h)
+                        rule_scores.append(dtl["score"])
+                        rule_levels.append(dtl["level"])
+                        
+                        ml_pred_h = dtl.get("ml_prediction")
+                        if ml_pred_h:
+                            ml_scores.append(crowd_to_value(ml_pred_h))
+                        else:
+                            ml_scores.append(crowd_to_value(dtl["level"]))
+                            
+                    df_trend = pd.DataFrame({
+                        "Hour": hours,
+                        "Rule-Based Score": rule_scores,
+                        "ML Crowd Level": ml_scores,
+                        "Rule Level": rule_levels
+                    })
+                    
+                    fig_trend = go.Figure()
+                    fig_trend.add_trace(go.Scatter(
+                        x=df_trend["Hour"], y=df_trend["Rule-Based Score"],
+                        mode="lines+markers", name="Rule Score",
+                        line=dict(color="#E8845A", width=3)
+                    ))
+                    fig_trend.add_trace(go.Scatter(
+                        x=df_trend["Hour"], y=df_trend["ML Crowd Level"],
+                        mode="lines", name="ML Level (1-4)",
+                        line=dict(color="#2E86AB", width=3, dash="dot")
+                    ))
+                    fig_trend.update_layout(
+                        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                        font=dict(family="Nunito", color="#333333"),
+                        xaxis=dict(title="Hour of Day (0-23)", tickmode="linear", tick0=0, dtick=2, showgrid=False),
+                        yaxis=dict(title="Crowd Score / Level", showgrid=True, gridcolor="rgba(0,0,0,0.1)"),
+                        margin=dict(l=20, r=20, t=20, b=20),
+                        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                    )
+                    
+                st.plotly_chart(fig_trend, use_container_width=True)
+
+
 
                 st.markdown('<hr class="tm-divider">', unsafe_allow_html=True)
 
@@ -487,13 +574,13 @@ def show():
 
                 st.markdown('<hr class="tm-divider">', unsafe_allow_html=True)
 
-                # ── NEARBY ATTRACTIONS ──────────────
+                # ── 2. NEARBY ATTRACTIONS (ML Ranked List) ──
                 st.markdown("""
                 <div class="tm-sec-head">
                     <div class="icon-box" style="background:linear-gradient(135deg,#2E86AB,#1A5F7A);">📍</div>
                     <div>
                         <p class="sec-title">Nearby Attractions</p>
-                        <p class="sec-sub">Live results from Google Places</p>
+                        <p class="sec-sub">ML-ranked · Local DB + OpenStreetMap</p>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -501,27 +588,110 @@ def show():
                 lat, lng = get_coordinates(place_search)
 
                 if lat and lng:
-                    nearby_places = get_nearby_attractions(lat, lng)
+                    from datetime import datetime as _dt
+                    nearby_places = get_nearby_attractions(
+                        lat, lng,
+                        user_hour=_dt.now().hour,
+                        user_preference=user_preference if user_preference != "any" else "",
+                    )
 
                     if nearby_places:
+                        
+                        st.markdown("<p style='font-size:0.95rem;font-weight:700;color:#2E86AB;margin-bottom:0.5rem;'>Interactive Attraction Map</p>", unsafe_allow_html=True)
+                        map_lats = [lat]
+                        map_lngs = [lng]
+                        map_names = [f"⭐ {info['place']} (Searched)"]
+                        map_colors = ["#E8845A"] # Orange for searched place
+                        
+                        current_hour = _dt.now().hour
                         for p in nearby_places:
-                            photo = p.get("photo") or \
+                            map_lats.append(p.get("lat", lat))
+                            map_lngs.append(p.get("lng", lng))
+                            map_names.append(p["name"])
+                            is_open = is_place_open(p.get("activity", ""), current_hour)
+                            map_colors.append("#4A7C59" if is_open else "#C0392B")
+
+                        df_map = pd.DataFrame({"lat": map_lats, "lon": map_lngs, "name": map_names, "color": map_colors})
+                        fig_map = px.scatter_mapbox(
+                            df_map, lat="lat", lon="lon", hover_name="name",
+                            color="color", color_discrete_map="identity",
+                            zoom=12, height=350
+                        )
+                        fig_map.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
+                        st.plotly_chart(fig_map, use_container_width=True)
+
+                        for idx, p in enumerate(nearby_places, 1):
+                            photo    = p.get("photo") or \
                                 "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=80"
+                            ml_score = p.get("ml_score", None)
+                            ml_badge = ""
+                            if ml_score is not None:
+                                ml_badge = f'<span style="display:inline-block;margin-top:0.35rem;'\
+                                           f'font-size:0.75rem;font-weight:700;'\
+                                           f'color:#1A5F7A;background:rgba(46,134,171,0.12);'\
+                                           f'border:1px solid rgba(46,134,171,0.25);'\
+                                           f'border-radius:99px;padding:2px 10px;">'\
+                                           f'🤖 ML Score: {ml_score:.2f}</span>'
+                                           
+                            is_open = is_place_open(p.get('activity', ''), _dt.now().hour)
+                            open_badge = f'<span style="display:inline-block;margin-top:0.35rem;margin-left:0.5rem;'\
+                                         f'font-size:0.75rem;font-weight:700;'\
+                                         f'color:{"#2D5016" if is_open else "#922B21"};'\
+                                         f'background:{"rgba(74,124,89,0.15)" if is_open else "rgba(192,57,43,0.15)"};'\
+                                         f'border:1px solid {"rgba(74,124,89,0.25)" if is_open else "rgba(192,57,43,0.25)"};'\
+                                         f'border-radius:99px;padding:2px 10px;">'\
+                                         f'{"🟢 OPEN NOW" if is_open else "🔴 CLOSED"}</span>'
+                                         
+                            rank_badge = f'<span style="display:inline-block;'\
+                                         f'font-size:0.72rem;font-weight:700;color:#8B6E47;'\
+                                         f'background:rgba(201,169,110,0.14);'\
+                                         f'border:1px solid rgba(201,169,110,0.28);'\
+                                         f'border-radius:99px;padding:2px 9px;margin-right:6px;">'\
+                                         f'#{idx}</span>'
                             st.markdown(f"""
                             <div class="tm-nearby-card">
                                 <img class="tm-nearby-img" src="{photo}" alt="{p['name']}">
                                 <div class="tm-nearby-body">
-                                    <p class="tm-nearby-name">🗺️ {p['name']}</p>
+                                    <p class="tm-nearby-name">{rank_badge}🗺️ {p['name']}</p>
                                     <p class="tm-nearby-rating">⭐ {p['rating']}</p>
-                                    <p class="tm-nearby-addr">📍 {p['vicinity']}</p>
+                                    <p class="tm-nearby-addr">📍 {p['vicinity']} &nbsp;·&nbsp; {round(p.get('distance_km',0),1)} km</p>
+                                    <div>{ml_badge}{open_badge}</div>
                                 </div>
                             </div>
                             """, unsafe_allow_html=True)
+                            
+                        st.markdown('<hr class="tm-divider">', unsafe_allow_html=True)
+                        st.markdown("""
+                        <div class="tm-sec-head">
+                            <div class="icon-box" style="background:linear-gradient(135deg,#9B59B6,#8E44AD);">✨</div>
+                            <div>
+                                <p class="sec-title">Smart Itinerary Generator</p>
+                                <p class="sec-sub">Let AI plan your visits based on lowest crowd times</p>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        if st.button("Generate Smart Itinerary 🪄", use_container_width=True):
+                            with st.spinner("Calculating optimal routing times..."):
+                                st.markdown("<h4 style='color:#333333;'>Your Optimal Day Trip 📝</h4>", unsafe_allow_html=True)
+                                curr_h = _dt.now().hour
+                                visit_hour = max(9, curr_h + 1)
+                                
+                                for p in nearby_places[:4]:
+                                    dtl = predict_crowd_detail(p['name'], hour=visit_hour)
+                                    status = "🟢 Open" if is_place_open(p.get('activity',''), visit_hour) else "🔴 Closed"
+                                    st.markdown(f"""
+                                    <div style="padding:10px 15px; margin-bottom:10px; background:rgba(155,89,182,0.1); border-left:4px solid #8E44AD; border-radius:6px; font-family:'Nunito',sans-serif;">
+                                        <span style="font-size:1.1rem; font-weight:700; color:#8E44AD;">🕒 {visit_hour:02d}:00</span> &nbsp;—&nbsp; Visit <strong>{p['name']}</strong><br>
+                                        <span style="font-size:0.85em; color:#555;">Crowd Prediction: <strong>{dtl['level']}</strong> &nbsp;|&nbsp; Status: {status}</span>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                    visit_hour = (visit_hour + 2) % 24
                     else:
                         st.markdown("""
                         <div class="tm-empty-state">
                             <span class="es-icon">📍</span>
-                            <p>No nearby attractions found via Google Places API.</p>
+                            <p>No nearby attractions found in your area.<br>
+                            Try increasing the search radius or a different location.</p>
                         </div>
                         """, unsafe_allow_html=True)
                 else:
@@ -533,32 +703,5 @@ def show():
                     </div>
                     """, unsafe_allow_html=True)
 
-    # ============================================
-    # ALL PLACES TABLE
-    # ============================================
 
-    st.markdown('<hr class="tm-divider">', unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="tm-sec-head">
-        <div class="icon-box" style="background:linear-gradient(135deg,#4A7C59,#2D5016);">📋</div>
-        <div>
-            <p class="sec-title">All Places Directory</p>
-            <p class="sec-sub">Browse our full crowd & timing database</p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    df = load_peak_hours()
-
-    if not df.empty:
-        st.markdown('<div class="tm-table-card">', unsafe_allow_html=True)
-        st.dataframe(df, use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-    else:
-        st.markdown("""
-        <div class="tm-empty-state">
-            <span class="es-icon">📋</span>
-            <p>No places data available yet.</p>
-        </div>
-        """, unsafe_allow_html=True)
+

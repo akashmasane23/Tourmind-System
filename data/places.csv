@@ -1,100 +1,101 @@
-city,state,place_name,latitude,longitude,description_keyword,activity_type
-Pune,Maharashtra,Shaniwar Wada,18.5195,73.8553,fort,historical
-Pune,Maharashtra,Aga Khan Palace,18.5535,73.9010,palace,historical
-Pune,Maharashtra,Sinhagad Fort,18.3663,73.7559,fort,forts
-Pune,Maharashtra,Pataleshwar Cave Temple,18.5294,73.8507,cave,historical
-Pune,Maharashtra,Raja Dinkar Kelkar Museum,18.5122,73.8567,museum,historical
-Pune,Maharashtra,Dagdusheth Halwai Ganpati Temple,18.5185,73.8567,temple,religious
-Pune,Maharashtra,Parvati Hill Temple,18.4966,73.8521,hill,spiritual
-Pune,Maharashtra,Pashan Lake,18.5403,73.7866,lake,nature
-Pune,Maharashtra,Okayama Friendship Garden,18.5091,73.8270,garden,nature
-Pune,Maharashtra,Empress Botanical Garden,18.4988,73.8944,garden,nature
-Pune,Maharashtra,National War Memorial Southern Command,18.5167,73.8943,memorial,historical
-Pune,Maharashtra,Shinde Chhatri,18.4881,73.8875,memorial,historical
-Pune,Maharashtra,Khadakwasla Dam,18.4573,73.7664,dam,nature
-Pune,Maharashtra,Peacock Bay,18.4608,73.7765,viewpoint,nature
-Pune,Maharashtra,Bund Garden,18.5419,73.8936,park,nature
-Pune,Maharashtra,Osho Teerth Park,18.5389,73.9080,park,nature
-Pune,Maharashtra,Vetal Tekdi,18.5349,73.8049,trek,nature
-Pune,Maharashtra,Paragliding at Kamshet,18.7588,73.4703,adventure,adventure
-Pune,Maharashtra,Lavasa,18.4056,73.5060,lakeside,city
-Pune,Maharashtra,Rajiv Gandhi Zoological Park,18.4570,73.8652,zoo,nature
-Pune,Maharashtra,ISKCON NVCC Temple,18.4577,73.8650,temple,religious
-Pune,Maharashtra,Balewadi High Street,18.5925,73.7518,shopping,city
-Pune,Maharashtra,Koregaon Park Lane 7,18.5366,73.9008,cafes,city
-Pune,Maharashtra,FC Road,18.5222,73.8416,shopping,city
-Pune,Maharashtra,JM Road,18.5235,73.8473,shopping,city
-Pune,Maharashtra,Patil Wada Vishrambaug Wada,18.5169,73.8550,wada,historical
-Pune,Maharashtra,Khunya Murlidhar Temple,18.5163,73.8582,temple,religious
-Pune,Maharashtra,Chatushringi Temple,18.5437,73.8295,temple,religious
-Pune,Maharashtra,Baner Pashan Biodiversity Park,18.5589,73.7927,park,nature
-Pune,Maharashtra,Gram Sanskruti Udyan Village Park,18.5157,73.8638,park,cultural
-Pune,Maharashtra,Blades of Glory Cricket Museum,18.5044,73.8290,museum,sports
-Pune,Maharashtra,Shivneri Fort (Near Pune),19.1977,73.8541,fort,forts
-Pune,Maharashtra,Lonavala Tiger Point,18.7714,73.4120,viewpoint,mountains
-Pune,Maharashtra,Bhushi Dam (Lonavala),18.7575,73.4118,dam,nature
-Pune,Maharashtra,Karla Caves (Lonavala),18.7452,73.4723,caves,historical
-Pune,Maharashtra,Bedse Caves (Maval),18.7192,73.5448,caves,historical
-Pune,Maharashtra,Pawna Lake,18.6500,73.5000,lake,camping
-Pune,Maharashtra,Mulshi Lake and Dam,18.5371,73.4087,lake,nature
-Pune,Maharashtra,Bhandardara (Day Trip),19.5417,73.7450,waterfall,nature
-Pune,Maharashtra,Lal Mahal,18.5196,73.8561,palace,historical
-Pune,Maharashtra,Tribal Museum Pune,18.5286,73.8478,museum,cultural
-Pune,Maharashtra,Pune-Okayama Friendship Garden,18.5091,73.8270,garden,nature
-Pune,Maharashtra,Saras Baug,18.4960,73.8580,garden,nature
-Pune,Maharashtra,Kamala Nehru Park,18.5092,73.8274,park,nature
-Pune,Maharashtra,Pune Cantonment,18.5136,73.8816,cantonment,historical
-Pune,Maharashtra,Sambhaji Park,18.5286,73.8432,park,nature
-Pune,Maharashtra,PMC Garden Nana Peth,18.5168,73.8636,garden,nature
-Pune,Maharashtra,Pune Railway Museum,18.5286,73.8770,museum,historical
-Pune,Maharashtra,Omkareshwar Temple,18.5294,73.8507,temple,religious
-Pune,Maharashtra,Tambe Ganesh Mandir,18.5160,73.8590,temple,religious
-Pune,Maharashtra,Taljai Hill,18.4815,73.8573,hill,nature
-Pune,Maharashtra,Hanuman Tekdi,18.5042,73.8345,hill,spiritual
-Pune,Maharashtra,Tekdi Ganesh Temple,18.5042,73.8345,temple,religious
-Pune,Maharashtra,Wada Hill,18.5180,73.7950,hill,nature
-Pune,Maharashtra,Chaturshringi Wildlife Sanctuary,18.5590,73.8075,wildlife,nature
-Pune,Maharashtra,Pashan Tekdi Green Lungs,18.5450,73.7900,trek,nature
-Pune,Maharashtra,Donje Village,18.5610,73.7465,village,cultural
-Pune,Maharashtra,Kothrud,18.5074,73.8076,locality,city
-Pune,Maharashtra,Apte Bungalow Fergusson College,18.5217,73.8397,heritage,historical
-Pune,Maharashtra,Deccan Gymkhana,18.5239,73.8402,heritage,historical
-Pune,Maharashtra,Wadeshwar Temple Katraj,18.4401,73.8629,temple,religious
-Pune,Maharashtra,Katraj Snake Park,18.4346,73.8593,wildlife,nature
-Pune,Maharashtra,Katraj Lake,18.4362,73.8617,lake,nature
-Pune,Maharashtra,Pune War Cemetery,18.5299,73.8812,memorial,historical
-Pune,Maharashtra,St. Mary's Church Pune,18.5282,73.8812,church,historical
-Pune,Maharashtra,Ohel David Synagogue,18.5254,73.8855,synagogue,historical
-Pune,Maharashtra,Confucius Institute,18.5339,73.8475,cultural,cultural
-Pune,Maharashtra,German Bakery Area Koregaon Park,18.5339,73.9007,cafe,city
-Pune,Maharashtra,Amanora Town Centre,18.5550,73.9288,mall,shopping
-Pune,Maharashtra,Phoenix Marketcity,18.5598,73.9050,mall,shopping
-Pune,Maharashtra,Seasons Mall,18.4614,73.8634,mall,shopping
-Pune,Maharashtra,Westend Mall,18.5219,73.8395,mall,shopping
-Pune,Maharashtra,SGS Mall,18.5200,73.8560,mall,shopping
-Pune,Maharashtra,Inorbit Mall Pune,18.5598,73.9050,mall,shopping
-Pune,Maharashtra,Kalyani Nagar Food Street,18.5504,73.9200,street food,food
-Pune,Maharashtra,Budhwar Peth,18.5160,73.8570,market,shopping
-Pune,Maharashtra,Tulshi Baug Market,18.5130,73.8570,market,shopping
-Pune,Maharashtra,Laxmi Road Market,18.5141,73.8544,market,shopping
-Pune,Maharashtra,Mandai Market,18.5167,73.8554,market,shopping
-Pune,Maharashtra,Pune Camel Park,18.5580,73.9290,park,family
-Pune,Maharashtra,Imagica Theme Park (Khopoli),18.7639,73.2614,amusement,adventure
-Pune,Maharashtra,Della Adventure Park,18.7602,73.4089,adventure,adventure
-Pune,Maharashtra,Xthrill Water Park Urse,18.7247,73.5200,water park,adventure
-Pune,Maharashtra,Wet N Joy Water Park,18.7236,73.4147,water park,adventure
-Pune,Maharashtra,Hadapsar Industrial Estate,18.5034,73.9259,industrial,city
-Pune,Maharashtra,Pune IT Park Hinjewadi,18.5913,73.7383,tech park,city
-Pune,Maharashtra,Symbiosis College,18.5254,73.8263,education,cultural
-Pune,Maharashtra,Fergusson College,18.5212,73.8396,education,historical
-Pune,Maharashtra,College of Engineering Pune,18.5300,73.8476,education,historical
-Pune,Maharashtra,Savitribai Phule Pune University,18.5590,73.8085,university,historical
-Pune,Maharashtra,National Film Archive of India,18.5282,73.8398,archive,cultural
-Pune,Maharashtra,Film and Television Institute of India,18.5283,73.8383,institute,cultural
-Pune,Maharashtra,Kesari Wada,18.5178,73.8544,wada,historical
-Pune,Maharashtra,Vishrambaug Wada,18.5164,73.8545,wada,historical
-Pune,Maharashtra,Nana Wada,18.5172,73.8547,wada,historical
-Pune,Maharashtra,Trishund Mayureshwar Temple,18.5150,73.8535,temple,religious
-Pune,Maharashtra,Kasba Ganpati Temple,18.5196,73.8574,temple,religious
-Pune,Maharashtra,Tambdi Jogeshwari Temple,18.5185,73.8567,temple,religious
-Pune,Maharashtra,Peshwa Period Pond Budhwar Peth,18.5155,73.8571,heritage,historical
+city,state,place_name,latitude,longitude,description_keyword,activity_type,rating
+Pune,Maharashtra,Shaniwar Wada,18.5195,73.8553,fort,historical,4.6
+Pune,Maharashtra,Aga Khan Palace,18.5535,73.901,palace,historical,4.4
+Pune,Maharashtra,Sinhagad Fort,18.3663,73.7559,fort,forts,4.0
+Pune,Maharashtra,Pataleshwar Cave Temple,18.5294,73.8507,cave,historical,4.2
+Pune,Maharashtra,Raja Dinkar Kelkar Museum,18.5122,73.8567,museum,historical,4.1
+Pune,Maharashtra,Dagdusheth Halwai Ganpati Temple,18.5185,73.8567,temple,religious,4.4
+Pune,Maharashtra,Parvati Hill Temple,18.4966,73.8521,hill,spiritual,4.5
+Pune,Maharashtra,Pashan Lake,18.5403,73.7866,lake,nature,4.2
+Pune,Maharashtra,Okayama Friendship Garden,18.5091,73.827,garden,nature,4.4
+Pune,Maharashtra,Empress Botanical Garden,18.4988,73.8944,garden,nature,4.3
+Pune,Maharashtra,National War Memorial,18.5167,73.8943,memorial,historical,4.7
+Pune,Maharashtra,Shinde Chhatri,18.4881,73.8875,memorial,historical,4.7
+Pune,Maharashtra,Khadakwasla Dam,18.4573,73.7664,dam,nature,4.8
+Pune,Maharashtra,Peacock Bay,18.4608,73.7765,viewpoint,nature,4.7
+Pune,Maharashtra,Bund Garden,18.5419,73.8936,park,nature,4.2
+Pune,Maharashtra,Osho Teerth Park,18.5389,73.908,park,nature,4.7
+Pune,Maharashtra,Vetal Tekdi,18.5349,73.8049,trek,nature,4.4
+Pune,Maharashtra,Paragliding at Kamshet,18.7588,73.4703,adventure,adventure,4.7
+Pune,Maharashtra,Lavasa,18.4056,73.506,lakeside,city,4.1
+Pune,Maharashtra,Rajiv Gandhi Zoological Park,18.457,73.8652,zoo,nature,4.0
+Pune,Maharashtra,ISKCON NVCC Temple,18.4577,73.865,temple,religious,4.3
+Pune,Maharashtra,Balewadi High Street,18.5925,73.7518,shopping,city,4.3
+Pune,Maharashtra,Koregaon Park,18.5366,73.9008,cafes,city,4.6
+Pune,Maharashtra,FC Road,18.5222,73.8416,shopping,city,4.5
+Pune,Maharashtra,JM Road,18.5235,73.8473,shopping,city,4.5
+Pune,Maharashtra,Vishrambaug Wada,18.5164,73.8545,wada,historical,4.6
+Pune,Maharashtra,Khunya Murlidhar Temple,18.5163,73.8582,temple,religious,4.3
+Pune,Maharashtra,Chatushringi Temple,18.5437,73.8295,temple,religious,4.3
+Pune,Maharashtra,Baner Pashan Biodiversity Park,18.5589,73.7927,park,nature,4.7
+Pune,Maharashtra,Blades of Glory Cricket Museum,18.5044,73.829,museum,sports,4.8
+Pune,Maharashtra,Shivneri Fort,19.1977,73.8541,fort,forts,4.4
+Pune,Maharashtra,Lonavala Tiger Point,18.7714,73.412,viewpoint,mountains,4.1
+Pune,Maharashtra,Bhushi Dam,18.7575,73.4118,dam,nature,4.2
+Pune,Maharashtra,Karla Caves,18.7452,73.4723,caves,historical,4.1
+Pune,Maharashtra,Bedse Caves,18.7192,73.5448,caves,historical,4.7
+Pune,Maharashtra,Pawna Lake,18.65,73.5,lake,camping,4.3
+Pune,Maharashtra,Mulshi Lake and Dam,18.5371,73.4087,lake,nature,4.4
+Pune,Maharashtra,Bhandardara,19.5417,73.745,waterfall,nature,4.7
+Pune,Maharashtra,Lal Mahal,18.5196,73.8561,palace,historical,4.7
+Pune,Maharashtra,Tribal Museum Pune,18.5286,73.8478,museum,cultural,4.7
+Pune,Maharashtra,Saras Baug,18.496,73.858,garden,nature,4.6
+Pune,Maharashtra,Kamala Nehru Park,18.5092,73.8274,park,nature,4.7
+Pune,Maharashtra,Sambhaji Park,18.5286,73.8432,park,nature,4.7
+Pune,Maharashtra,Pune Railway Museum,18.5286,73.877,museum,historical,4.6
+Pune,Maharashtra,Omkareshwar Temple,18.5294,73.8507,temple,religious,4.7
+Pune,Maharashtra,Taljai Hill,18.4815,73.8573,hill,nature,4.6
+Pune,Maharashtra,Hanuman Tekdi,18.5042,73.8345,hill,spiritual,4.3
+Pune,Maharashtra,Katraj Snake Park,18.4346,73.8593,wildlife,nature,4.5
+Pune,Maharashtra,Katraj Lake,18.4362,73.8617,lake,nature,4.4
+Pune,Maharashtra,Pune War Cemetery,18.5299,73.8812,memorial,historical,4.8
+Pune,Maharashtra,Ohel David Synagogue,18.5254,73.8855,synagogue,historical,4.2
+Pune,Maharashtra,Amanora Mall,18.555,73.9288,mall,shopping,4.6
+Pune,Maharashtra,Phoenix Marketcity,18.5598,73.905,mall,shopping,4.5
+Pune,Maharashtra,Seasons Mall,18.4614,73.8634,mall,shopping,4.6
+Pune,Maharashtra,Westend Mall,18.5219,73.8395,mall,shopping,4.5
+Pune,Maharashtra,Kalyani Nagar,18.5504,73.92,street food,food,4.5
+Pune,Maharashtra,Mandai Market,18.5167,73.8554,market,shopping,4.3
+Pune,Maharashtra,Imagica Theme Park,18.7639,73.2614,amusement,adventure,4.0
+Pune,Maharashtra,Della Adventure Park,18.7602,73.4089,adventure,adventure,4.6
+Pune,Maharashtra,Fergusson College,18.5212,73.8396,education,historical,4.2
+Pune,Maharashtra,College of Engineering Pune,18.53,73.8476,education,historical,4.5
+Pune,Maharashtra,Pune University,18.559,73.8085,university,historical,4.3
+Pune,Maharashtra,National Film Archive,18.5282,73.8398,archive,cultural,4.6
+Pune,Maharashtra,Kasba Ganpati Temple,18.5196,73.8574,temple,religious,4.4
+Pune,Maharashtra,Kesari Wada,18.5178,73.8544,wada,historical,4.5
+Pune,Maharashtra,Deccan Gymkhana,18.5239,73.8402,heritage,historical,4.0
+Pune,Maharashtra,Chaturshringi Wildlife,18.559,73.8075,wildlife,nature,4.0
+Pune,Maharashtra,Pashan Tekdi,18.545,73.79,trek,nature,4.5
+Pune,Maharashtra,Pune Cantonment,18.5136,73.8816,cantonment,historical,4.6
+Pune,Maharashtra,Wet N Joy Water Park,18.7236,73.4147,water park,adventure,4.1
+Pune,Maharashtra,Xthrill Water Park,18.7247,73.52,water park,adventure,4.5
+Pune,Maharashtra,Appu Ghar Pune,18.65,73.75,amusement,family,4.4
+Pune,Maharashtra,Panshet Dam,18.384,73.614,dam,nature,4.7
+Pune,Maharashtra,Varasgaon Dam,18.39,73.6,dam,nature,4.6
+Pune,Maharashtra,Temghar Dam,18.45,73.57,dam,nature,4.6
+Pune,Maharashtra,Neelkantheshwar,18.4,73.59,temple,spiritual,4.4
+Pune,Maharashtra,Torna Fort,18.27,73.62,fort,adventure,4.7
+Pune,Maharashtra,Rajgad Fort,18.24,73.68,fort,adventure,4.6
+Pune,Maharashtra,Tikona Fort,18.63,73.51,fort,adventure,4.2
+Pune,Maharashtra,Lohagad Fort,18.7,73.48,fort,adventure,4.2
+Pune,Maharashtra,Visapur Fort,18.71,73.49,fort,adventure,4.7
+Pune,Maharashtra,Korigad Fort,18.62,73.38,fort,adventure,4.8
+Pune,Maharashtra,Tung Fort,18.65,73.45,fort,adventure,4.3
+Pune,Maharashtra,Purandar Fort,18.28,73.97,fort,adventure,4.7
+Pune,Maharashtra,Rohida Fort,18.15,73.82,fort,adventure,4.6
+Pune,Maharashtra,Bhuleshwar Temple,18.42,74.15,temple,spiritual,4.4
+Pune,Maharashtra,Ranjangaon Mahaganpati,18.75,74.24,temple,spiritual,4.7
+Pune,Maharashtra,Theur Chintamani,18.52,74.05,temple,spiritual,4.6
+Pune,Maharashtra,Morgaon Mayureshwar,18.27,74.32,temple,spiritual,4.1
+Pune,Maharashtra,Lenyadri Girijatmaj,19.23,73.88,temple,spiritual,4.7
+Pune,Maharashtra,Ozar Vighnahar,19.18,73.95,temple,spiritual,4.7
+Pune,Maharashtra,BAPS Shri Swaminarayan Mandir,18.44,73.83,temple,spiritual,4.7
+Pune,Maharashtra,Ekvira Aai Temple,18.75,73.47,temple,spiritual,4.7
+Pune,Maharashtra,Prati Shirdi Shirgaon,18.69,73.68,temple,spiritual,4.4
+Pune,Maharashtra,Dehu Gatha Mandir,18.71,73.76,temple,spiritual,4.5
+Pune,Maharashtra,Alandi,18.67,73.89,temple,spiritual,4.2
+Pune,Maharashtra,Ramdara Temple,18.44,74.02,temple,spiritual,4.2
+Pune,Maharashtra,Bopdev Ghat,18.39,73.89,viewpoint,nature,4.3
+Pune,Maharashtra,Dive Ghat,18.42,73.99,viewpoint,nature,4.6
+Pune,Maharashtra,Mastani Mahal,18.42,73.995,palace,historical,4.1
