@@ -660,12 +660,27 @@ def show():
                     f'<p class="tm-place-name">{row["place_name"]} <span style="font-size:1.1rem; color:#F4B942;">{stars}</span> <span style="font-size:0.9rem; color:#666;">({rating})</span></p>',
                     unsafe_allow_html=True
                 )
+                from datetime import datetime, timezone, timedelta
+                from services.ml_service import _ACTIVITY_HOURS
+                
+                ist_tz = timezone(timedelta(hours=5, minutes=30))
+                current_hour = datetime.now(ist_tz).hour
+                
+                activity = str(row['activity_type']).lower()
+                lo, hi = _ACTIVITY_HOURS.get(activity, (8, 20))
+                is_open = lo <= current_hour <= hi
+                
+                if is_open:
+                    open_badge = '<span class="tm-meta-pill" style="background:rgba(45,80,22,0.1); border:1px solid rgba(45,80,22,0.3); color:#2D5016;">🟢 OPEN NOW</span>'
+                else:
+                    open_badge = '<span class="tm-meta-pill" style="background:rgba(192,57,43,0.1); border:1px solid rgba(192,57,43,0.3); color:#922B21;">🔴 CLOSED</span>'
+
                 st.markdown(f"""
                 <div class="tm-meta-row">
                     <span class="tm-meta-pill tm-pill-location">📍 {row['city']}, {row['state']}</span>
                     <span class="tm-meta-pill tm-pill-keyword">🏷️ {row['description_keyword']}</span>
                     <span class="tm-meta-pill tm-pill-activity">🎯 {row['activity_type']}</span>
-                    <span class="tm-meta-pill" style="background:rgba(45,80,22,0.1); border:1px solid rgba(45,80,22,0.3); color:#2D5016;">🟢 Open Now</span>
+                    {open_badge}
                 </div>
                 """, unsafe_allow_html=True)
 
