@@ -206,12 +206,14 @@ def save_review(place: str, user_name: str, rating: int, comment: str) -> bool:
         log.warning("save_review: invalid rating %s", rating)
         return False
 
+    from datetime import datetime, timezone, timedelta
+    ist_tz = timezone(timedelta(hours=5, minutes=30))
     new_row = {
         "place":     place,
         "user_name": user_name,
         "rating":    int(rating),
         "comment":   comment,
-        "date":      datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "date":      datetime.now(ist_tz).strftime("%Y-%m-%d %H:%M:%S"),
     }
 
     # ── Google Sheets ─────────────────────────
@@ -273,8 +275,11 @@ def save_itinerary(destination: str, days: int, itinerary_data: Dict) -> bool:
     Primary:  Append row to Google Sheets tab "Itineraries"
     Fallback: Append to data/itineraries.json
     """
-    key        = f"{destination.strip()}_{days}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-    created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    from datetime import datetime, timezone, timedelta
+    ist_tz = timezone(timedelta(hours=5, minutes=30))
+    now = datetime.now(ist_tz)
+    key        = f"{destination.strip()}_{days}_{now.strftime('%Y%m%d_%H%M%S')}"
+    created_at = now.strftime("%Y-%m-%d %H:%M:%S")
     prefs      = itinerary_data.get("preferences", [])
     prefs_str  = ", ".join(prefs) if isinstance(prefs, list) else str(prefs)
 
