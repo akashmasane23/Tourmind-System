@@ -209,7 +209,9 @@ class MLService:
             Same list with 'ml_score' (float 0–1) added, sorted descending.
         """
         if user_hour is None:
-            user_hour = datetime.now().hour
+            from datetime import timezone as _tz, timedelta as _td
+            _ist = _tz(_td(hours=5, minutes=30))
+            user_hour = datetime.now(_ist).hour
 
         user_pref = (user_preference or "").strip().lower()
 

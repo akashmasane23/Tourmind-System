@@ -42,7 +42,8 @@ _HOLIDAYS: set[tuple[int, int]] = {
 
 def _is_holiday(d: date | None = None) -> bool:
     """Return True if the date falls on a known Indian public holiday."""
-    d = d or date.today()
+    from datetime import timezone as _tz, timedelta as _td, datetime as _dt
+    d = d or _dt.now(_tz(_td(hours=5, minutes=30))).date()
     return (d.month, d.day) in _HOLIDAYS
 
 
@@ -185,7 +186,8 @@ def predict_crowd_detail(city: str = "Pune", hour: int = None) -> dict:
           "ml_confidence": float | None — probability of the predicted class
         }
     """
-    now      = datetime.now()
+    from datetime import timezone as _tz, timedelta as _td
+    now      = datetime.now(_tz(_td(hours=5, minutes=30)))
     current_hour = now.hour if hour is None else hour
     weekday  = now.weekday()
     holiday  = _is_holiday(now.date())
