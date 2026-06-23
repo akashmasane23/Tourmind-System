@@ -99,31 +99,166 @@ _CITY_FALLBACKS = {
 def _unsplash_fallback(query: str, count: int = 1,
                         activity: str = None, city: str = None) -> List[Dict]:
     """
-    Fallback when Unsplash API fails:
-    Uses a predefined list of high-quality static travel images.
+    Last-resort fallback using Wikipedia Commons public domain travel images.
+    Only reached when Wikipedia page search also returns nothing.
     """
-    # Hardcoded beautiful travel placeholders
+    import hashlib
+    # Wikipedia Commons public-domain travel images
     placeholders = [
-        "https://images.unsplash.com/photo-1506461883276-594a12b11ea3?q=80&w=800", # Travel map
-        "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800", # Boat/Mountains
-        "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=800", # Plane/Travel
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800", # Beach
-        "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800", # City
-        "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800", # Van/Roadtrip
-        "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?q=80&w=800", # Camera/Journal
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/India_Gate_in_New_Delhi_03-2016.jpg/960px-India_Gate_in_New_Delhi_03-2016.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Taj_Mahal%2C_Agra%2C_India_edit3.jpg/960px-Taj_Mahal%2C_Agra%2C_India_edit3.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Rotating_earth_%28large%29.gif/200px-Rotating_earth_%28large%29.gif",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-nature-natural-beauty.jpg/960px-24701-nature-natural-beauty.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/280px-PNG_transparency_demonstration_1.png",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Bihu_dance_in_Assam.jpg/960px-Bihu_dance_in_Assam.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/480px-No_image_available.svg.png",
     ]
-    
-    seed = abs(hash(query.lower().strip())) % len(placeholders)
-    
+
+    seed_hash = hashlib.md5(query.lower().strip().encode("utf-8")).hexdigest()
+    seed = int(seed_hash, 16) % len(placeholders)
+
     return [
         {
             "url": placeholders[(seed + i) % len(placeholders)],
             "alt": f"Travel destination {i+1}",
-            "photographer": "TourMind AI Placeholder",
-            "photographer_url": "#"
+            "photographer": "Wikipedia Commons",
+            "photographer_url": "https://commons.wikimedia.org"
         }
         for i in range(count)
     ]
+
+
+
+def get_wikipedia_images_robust(query: str, count: int = 3) -> List[Dict]:
+    """
+    Search Wikipedia for matching pages, score them based on overlap with the query,
+    sort by score, and retrieve their main thumbnails.
+    """
+    import re
+    search_url = "https://en.wikipedia.org/w/api.php"
+    search_params = {
+        "action": "query",
+        "list": "search",
+        "srsearch": query,
+        "format": "json",
+        "srlimit": count * 3
+    }
+    headers = {"User-Agent": WIKI_USER_AGENT}
+    
+    try:
+        response = _get_with_retry(search_url, params=search_params, headers=headers)
+        if not response:
+            return []
+            
+        results = response.json().get("query", {}).get("search", [])
+        if not results:
+            return []
+        
+        # Clean and tokenize query
+        noise_words = {
+            "temple", "fort", "market", "peth", "pune", "mumbai", "india", 
+            "tourist", "attraction", "historical", "monument", "lake", "garden", 
+            "park", "museum", "palace", "caves", "hill", "of", "and", "the", "in"
+        }
+        
+        def tokenize(text):
+            text = text.lower()
+            text = re.sub(r'ganpati|ganapathi', 'ganapati', text)
+            words = re.findall(r'[a-z0-9]+', text)
+            return [w for w in words if w not in noise_words]
+        
+        query_tokens = tokenize(query)
+        if not query_tokens:
+            query_tokens = re.findall(r'[a-z0-9]+', query.lower())
+            
+        scored_pages = []
+        for r_item in results:
+            title = r_item["title"]
+            title_tokens = tokenize(title)
+            
+            # Score overlap
+            overlap = set(query_tokens).intersection(set(title_tokens))
+            score = len(overlap)
+            
+            # Start word bonus
+            if query_tokens and title_tokens and query_tokens[0] == title_tokens[0]:
+                score += 0.5
+                
+            # Title length penalty
+            score -= len(title_tokens) * 0.05
+            
+            scored_pages.append((score, title))
+            
+        scored_pages.sort(key=lambda x: x[0], reverse=True)
+        top_titles = [title for _, title in scored_pages]
+        
+        if not top_titles:
+            return []
+            
+        # Get thumbnails
+        img_params = {
+            "action": "query",
+            "prop": "pageimages",
+            "format": "json",
+            "piprop": "thumbnail",
+            "pithumbsize": 800,
+            "titles": "|".join(top_titles[:count * 2]),
+            "redirects": 1,
+        }
+        r_img = _get_with_retry(search_url, params=img_params, headers=headers)
+        if not r_img:
+            return []
+            
+        pages = r_img.json().get("query", {}).get("pages", {})
+        title_to_img = {}
+        for pid, pinfo in pages.items():
+            t = pinfo.get("title")
+            img_url = pinfo.get("thumbnail", {}).get("source")
+            if img_url:
+                title_to_img[t] = {
+                    "url": img_url,
+                    "title": t
+                }
+                
+        images = []
+        for t in top_titles:
+            if t in title_to_img:
+                images.append(title_to_img[t])
+                if len(images) >= count:
+                    break
+                    
+        return images
+    except Exception:
+        return []
+
+
+def _wikipedia_image_fallback(query: str, count: int = 1) -> List[Dict]:
+    """
+    Fallback using Wikipedia page images, with a secondary fallback to static placeholders.
+    """
+    wiki_images = get_wikipedia_images_robust(query, count)
+    
+    formatted_images = []
+    for img in wiki_images:
+        title = img["title"]
+        url = img["url"]
+        formatted_images.append({
+            "url":              url,
+            "thumb":            url,
+            "alt":              f"Wikipedia image for {title}",
+            "photographer":     "Wikipedia Contributors",
+            "photographer_url": f"https://en.wikipedia.org/wiki/{title.replace(' ', '_')}",
+            "unsplash_link":    f"https://en.wikipedia.org/wiki/{title.replace(' ', '_')}",
+            "query_used":       title,
+        })
+        
+    if len(formatted_images) >= count:
+        return formatted_images[:count]
+        
+    needed = count - len(formatted_images)
+    placeholders = _unsplash_fallback(query, needed)
+    formatted_images.extend(placeholders)
+    return formatted_images[:count]
 
 
 def _build_search_variations(place_name: str,
@@ -184,65 +319,11 @@ def get_unsplash_image(query: str, count: int = 1,
                         activity_type: str = None,
                         city: str = None) -> List[Dict]:
     """
-    Fetch images from Unsplash with smart multi-tier search strategy.
-
-    Improvements:
-    - Removes parenthetical qualifiers from place names before searching
-    - Falls back through activity-type and city-level generic queries
-    - Never returns a broken image — always falls back to Picsum
-    - Validates that returned images actually have a usable URL
+    Fetch images — always uses Wikipedia for accurate, place-specific images.
+    Unsplash is bypassed to avoid random/incorrect images on free-tier rate limits.
     """
-    _cache_buster = 2 # Forces Streamlit to invalidate old cached results
-    
-    if not UNSPLASH_ACCESS_KEY or UNSPLASH_ACCESS_KEY == "YOUR_UNSPLASH_ACCESS_KEY":
-        return _unsplash_fallback(query, count, activity_type, city)
+    return _wikipedia_image_fallback(query, count)
 
-    headers = {"Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"}
-    variations = _build_search_variations(query, activity_type, city)
-
-    for search_query in variations:
-        response = _get_with_retry(
-            UNSPLASH_API_URL,
-            params={
-                "query":          search_query,
-                "per_page":       max(count, 3),   # fetch a few extra to filter bad ones
-                "orientation":    "landscape",
-                "content_filter": "high",
-            },
-            headers=headers,
-        )
-
-        if not response:
-            continue
-
-        results = response.json().get("results", [])
-        if not results:
-            continue
-
-        # Filter out results with missing/placeholder URLs
-        valid = [
-            r for r in results
-            if r.get("urls", {}).get("regular")
-            and r.get("user", {}).get("name")
-            and r.get("width", 0) > 400   # skip tiny images
-        ]
-
-        if valid:
-            return [
-                {
-                    "url":              r["urls"]["regular"],
-                    "thumb":            r["urls"]["thumb"],
-                    "alt":              r.get("alt_description") or search_query,
-                    "photographer":     r["user"]["name"],
-                    "photographer_url": r["user"]["links"]["html"],
-                    "unsplash_link":    r["links"]["html"],
-                    "query_used":       search_query,   # useful for debugging
-                }
-                for r in valid[:count]
-            ]
-
-    # All Unsplash queries failed — use Picsum
-    return _unsplash_fallback(query, count, activity_type, city)
 
 
 # ============================================

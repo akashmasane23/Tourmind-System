@@ -79,40 +79,19 @@ def _load_places_df() -> pd.DataFrame:
 @st.cache_data(ttl=86400)
 def _get_place_photo(place_name: str) -> str:
     """
-    Try Unsplash API for a photo; fall back to a beautiful static travel placeholder.
+    Get a place photo using the central get_unsplash_image utility,
+    which has built-in Wikipedia fallbacks and stable hashing.
     """
+    from utils.api_handlers import get_unsplash_image
     try:
-        key = st.secrets.get("UNSPLASH_ACCESS_KEY") or st.secrets.get("UNSPLASH_API_KEY")
+        imgs = get_unsplash_image(place_name, count=1)
+        if imgs:
+            return imgs[0]["url"]
     except Exception:
-        key = None
-
-    if key and key != "YOUR_UNSPLASH_ACCESS_KEY":
-        try:
-            resp = requests.get(
-                "https://api.unsplash.com/search/photos",
-                params={"query": place_name, "per_page": 1, "orientation": "landscape"},
-                headers={"Authorization": f"Client-ID {key}"},
-                timeout=5,
-            )
-            if resp.status_code == 200:
-                results = resp.json().get("results", [])
-                if results:
-                    return results[0]["urls"]["regular"]
-        except Exception:
-            pass
-
-    # Hardcoded beautiful static travel placeholders
-    placeholders = [
-        "https://images.unsplash.com/photo-1506461883276-594a12b11ea3?q=80&w=800", # Travel map
-        "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800", # Boat/Mountains
-        "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=800", # Plane/Travel
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800", # Beach
-        "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800", # City
-        "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800", # Van/Roadtrip
-        "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?q=80&w=800", # Camera/Journal
-    ]
-    seed = abs(hash(place_name)) % len(placeholders)
-    return placeholders[seed]
+        pass
+    
+    # Ultimate neutral fallback
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/480px-No_image_available.svg.png"
 
 
 # ============================================

@@ -402,10 +402,12 @@ def show():
             g1, g2, g3 = st.columns(3, gap="small")
             for col, img in zip([g1, g2, g3], images):
                 with col:
-                    st.markdown('<div class="tm-photo-wrap">', unsafe_allow_html=True)
-                    st.image(img["url"], width='stretch')
-                    st.markdown('<div class="tm-photo-overlay"></div>', unsafe_allow_html=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
+                    st.markdown(f'''
+                    <div class="tm-photo-wrap">
+                        <img src="{img["url"]}" style="width:100%; object-fit:cover; aspect-ratio:4/3; display:block;" />
+                        <div class="tm-photo-overlay"></div>
+                    </div>
+                    ''', unsafe_allow_html=True)
         else:
             st.markdown("""
             <div class="tm-empty-state">

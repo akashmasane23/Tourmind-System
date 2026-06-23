@@ -110,20 +110,58 @@ def show():
         animation: fadeUp 0.35s ease both;
     }
 
-    /* User bubble */
-    [data-testid="stChatMessage"][data-testid*="user"],
-    div[class*="stChatMessage-user"] {
+    /* Chat bubbles background override */
+    [data-testid="stChatMessage"] [data-testid="stChatMessageContent"],
+    [data-testid="stChatMessageContent"],
+    [data-testid="stChatMessage"] {
         background: linear-gradient(135deg,
-            rgba(45,80,22,0.10), rgba(74,124,89,0.08)) !important;
-        border: 1px solid rgba(74,124,89,0.2) !important;
+            rgba(250,247,240,0.95), rgba(232,213,163,0.15)) !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Chat bubbles text color force dark for perfect readability (targets every possible text tag inside chat containers) */
+    [data-testid="stChatMessage"] *,
+    [data-testid="stChatMessageContent"] *,
+    .stChatMessage *,
+    div[data-chat-message-role] *,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] *,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] span,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] li,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] strong,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] em,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] h1,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] h2,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] h3,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] h4,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] h5,
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] h6,
+    div[data-chat-message-role] [data-testid="stMarkdownContainer"] *,
+    div[data-chat-message-role] [data-testid="stMarkdownContainer"] p,
+    div[data-chat-message-role] [data-testid="stMarkdownContainer"] span,
+    div[data-chat-message-role] [data-testid="stMarkdownContainer"] li,
+    div[data-chat-message-role] [data-testid="stMarkdownContainer"] strong,
+    div[data-chat-message-role] [data-testid="stMarkdownContainer"] em {
+        color: #1a1a1a !important;
     }
 
-    /* Assistant bubble */
-    [data-testid="stChatMessage"][data-testid*="assistant"],
-    div[class*="stChatMessage-assistant"] {
-        background: linear-gradient(135deg,
-            rgba(232,213,163,0.25), rgba(200,221,212,0.20)) !important;
-        border: 1px solid rgba(201,169,110,0.22) !important;
+    /* Link styling inside bubbles - high specificity to override universal rule */
+    [data-testid="stChatMessage"] [data-testid="stChatMessageContent"] a,
+    [data-testid="stChatMessageContent"] a,
+    [data-testid="stChatMessage"] a,
+    div[data-chat-message-role] a {
+        color: #2E86AB !important;
+        text-decoration: underline !important;
+    }
+
+    /* Code block styling inside bubbles - high specificity to override universal rule */
+    [data-testid="stChatMessage"] [data-testid="stChatMessageContent"] code,
+    [data-testid="stChatMessageContent"] code,
+    [data-testid="stChatMessage"] code,
+    div[data-chat-message-role] code {
+        color: #C0392B !important;
+        background-color: rgba(0,0,0,0.05) !important;
     }
 
     /* ── Divider ── */
@@ -301,8 +339,8 @@ def show():
     st.markdown("""
     <div class="tm-chat-hero">
         <div class="tm-chat-badge">🤖 AI Powered</div>
-        <h1>TourMind AI Chatbot</h1>
-        <p>
+        <h1 style="color:#fff!important;font-family:'Playfair Display',Georgia,serif!important;">TourMind AI Chatbot</h1>
+        <p style="color:rgba(255,255,255,0.88)!important;">
             Ask me about destinations, itineraries, budgets,<br>
             travel tips, or nearby attractions 🌍
         </p>

@@ -623,8 +623,12 @@ def show():
                         st.plotly_chart(fig_map, use_container_width=True)
 
                         for idx, p in enumerate(nearby_places, 1):
-                            photo    = p.get("photo") or \
-                                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=80"
+                            _raw_photo = p.get("photo")
+                            if not _raw_photo:
+                                from utils.api_handlers import get_unsplash_image as _gimg
+                                _fb = _gimg(p.get("name", "tourist place"), count=1)
+                                _raw_photo = _fb[0]["url"] if _fb else "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/480px-No_image_available.svg.png"
+                            photo    = _raw_photo
                             ml_score = p.get("ml_score", None)
                             ml_badge = ""
                             if ml_score is not None:

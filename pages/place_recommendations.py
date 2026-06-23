@@ -630,24 +630,23 @@ def show():
             with inner_col_img:
                 st.markdown("<br>", unsafe_allow_html=True)
                 if images:
-                    st.markdown('<div class="tm-card-img-wrap">', unsafe_allow_html=True)
-                    st.image(images[0]["url"], width='stretch')
-                    st.markdown('<div class="tm-card-img-overlay"></div>', unsafe_allow_html=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
-                    st.markdown(
-                        f'<p class="tm-photo-credit">📸 Photo by {images[0]["photographer"]}</p>',
-                        unsafe_allow_html=True
-                    )
+                    st.markdown(f'''
+                    <div class="tm-card-img-wrap">
+                        <img src="{images[0]["url"]}" alt="{row["place_name"]}" style="width:100%; object-fit:cover; aspect-ratio:4/3; display:block;" />
+                        <div class="tm-card-img-overlay"></div>
+                    </div>
+                    <p class="tm-photo-credit">📸 Photo by {images[0]["photographer"]}</p>
+                    ''', unsafe_allow_html=True)
                 else:
-                    placeholders = [
-                        "https://images.unsplash.com/photo-1506461883276-594a12b11ea3?q=80&w=800",
-                        "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800",
-                        "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=800",
-                        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800",
-                        "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800"
-                    ]
-                    seed = abs(hash(row["place_name"])) % len(placeholders)
-                    st.image(placeholders[seed], width='stretch')
+                    from utils.api_handlers import get_unsplash_image as _get_img
+                    fb = _get_img(row["place_name"], count=1)
+                    fb_url = fb[0]["url"] if fb else "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/480px-No_image_available.svg.png"
+                    st.markdown(f'''
+                    <div class="tm-card-img-wrap">
+                        <img src="{fb_url}" alt="{row["place_name"]}" style="width:100%; object-fit:cover; aspect-ratio:4/3; display:block;" />
+                        <div class="tm-card-img-overlay"></div>
+                    </div>
+                    ''', unsafe_allow_html=True)
 
             with inner_col_info:
                 st.markdown("<br>", unsafe_allow_html=True)
